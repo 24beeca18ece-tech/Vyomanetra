@@ -1,0 +1,14 @@
+# Virtual environment
+venv/
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment variables
+.env
+
+# Lightkurve / Astropy TESS data cache
+.cache/
+.lightkurve-cache/
