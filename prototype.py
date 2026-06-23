@@ -373,8 +373,9 @@ def main():
             r = process(tgt)
             if r is not None:
                 rows.append(r)
-        except Exception:
-            print(f"\n  *** ERROR on {tgt['name']}:"); traceback.print_exc()
+        except Exception as exc:
+            print(f"\n  *** ERROR on {tgt['name']}: {type(exc).__name__}: {exc}")
+            traceback.print_exc()
 
     W = 160
     print(f"\n\n{'=' * W}")
@@ -430,8 +431,82 @@ def main():
             ])
     print(f"Saved {csv_path}")
 
+def run_single_target(target_name):
+    """Run the pipeline for one target and merge result into existing CSV/TXT."""
+    tgt = None
+    for t in TARGETS:
+        if t["name"].lower() == target_name.lower():
+            tgt = t
+            break
+    if tgt is None:
+        print(f"ERROR: target '{target_name}' not found in TARGETS list.")
+        return
+
+    print("=" * 62)
+    print(f"  VyomAnetra — Single-Target Run: {tgt['name']}")
+    print("=" * 62, flush=True)
+
+    r = process(tgt)
+    if r is None:
+        print(f"\n  *** No result for {tgt['name']}.")
+        return
+
+    csv_path = os.path.join(RESULTS, "summary_table.csv")
+    csv_cols = ["target", "label", "period_days", "depth_ppm", "depth_err_ppm",
+                "total_duration_hr", "ingress_egress_hr", "flat_bottom_hr", "snr", "noise_ppm", "flag"]
+
+    existing = []
+    if os.path.exists(csv_path):
+        with open(csv_path, encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            existing = [row for row in reader if row["target"] != tgt["name"]]
+
+    new_row = {
+        "target": r["name"], "label": r["label"], "period_days": f"{r['period']:.6f}",
+        "depth_ppm": f"{r['depth_ppm']:.2f}", "depth_err_ppm": f"{r['depth_err']:.2f}",
+        "total_duration_hr": f"{r['total_dur']:.4f}", "ingress_egress_hr": f"{r['ingress_dur']:.4f}",
+        "flat_bottom_hr": f"{r['flat_dur']:.4f}", "snr": f"{r['snr']:.2f}",
+        "noise_ppm": f"{r['noise_ppm']:.2f}", "flag": r["flag"],
+    }
+    existing.append(new_row)
+
+    with open(csv_path, "w", encoding="utf-8", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(csv_cols)
+        for row in existing:
+            w.writerow([row[c] for c in csv_cols])
+    print(f"\nSaved {csv_path}")
+
+    W = 160
+    txt_path = os.path.join(RESULTS, "summary_table.txt")
+    hdr = (f"{'Target':<15} {'Label':<20} {'Period(d)':<12} {'Depth(ppm)':<13} "
+           f"{'Duration(h)':<13} {'Ingress(h)':<12} {'FlatBot(h)':<12} {'SNR':<10} {'Flag':<40}")
+    lines = ["=" * W, f"{'FINAL SUMMARY TABLE':^{W}}", "=" * W, hdr, "-" * W]
+    for row in existing:
+        lines.append(
+            f"{row['target']:<15} {row['label']:<20} {float(row['period_days']):<12.4f} "
+            f"{float(row['depth_ppm']):<13.1f} {float(row['total_duration_hr']):<13.3f} "
+            f"{float(row['ingress_egress_hr']):<12.3f} {float(row['flat_bottom_hr']):<12.3f} "
+            f"{float(row['snr']):<10.1f} {row['flag']:<40}")
+    lines.append("=" * W)
+
+    with open(txt_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+    print(f"Saved {txt_path}")
+
+    print(f"\n{'=' * W}")
+    for line in lines:
+        print(line)
+
+
 if __name__ == "__main__":
     if "--reclassify" in sys.argv:
         reclassify_existing()
+    elif "--target" in sys.argv:
+        idx = sys.argv.index("--target")
+        if idx + 1 < len(sys.argv):
+            run_single_target(sys.argv[idx + 1])
+        else:
+            print("ERROR: --target requires a target name argument.")
     else:
         main()
