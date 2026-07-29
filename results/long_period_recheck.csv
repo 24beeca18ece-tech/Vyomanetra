@@ -1,0 +1,7 @@
+target,tic_id,config,n_sectors_requested,n_sectors_used,span_d,max_p_d,binding_constraint,archive_period_d,archive_period_reachable,bls_period_d,bls_t0_btjd,bls_power,phase_offset_hr,in_transit
+TOI-2449 b,TIC 170729775,1_baseline_4sec_cap30,4,3,2634.9699,30.0000,ceiling,106.14468,False,29.513201,1421.095443,1.40557e-05,252.3553,False
+TOI-2449 b,TIC 170729775,2_capraised_4sec,4,3,2634.9699,150.0000,ceiling,106.14468,True,0.514950,1411.161443,1.52871e-05,13.9393,False
+TOI-2449 b,TIC 170729775,3_capraised_manysec,20,3,2634.9699,150.0000,ceiling,106.14468,True,0.514950,1411.161443,1.52871e-05,13.9393,False
+NGTS-20 b,TIC 257527578,1_baseline_4sec_cap30,4,2,25.4295,12.7148,span/2,54.18915,False,6.463840,2146.662768,5.30257e-05,221.3764,False
+NGTS-20 b,TIC 257527578,2_capraised_4sec,4,2,25.4295,12.7148,span/2,54.18915,False,4.609112,2146.452768,5.56727e-05,216.3364,False
+NGTS-20 b,TIC 257527578,3_capraised_manysec,20,2,25.4295,12.7148,span/2,54.18915,False,4.609112,2146.452768,5.56727e-05,216.3364,False
