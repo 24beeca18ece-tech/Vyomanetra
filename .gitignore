@@ -12,3 +12,24 @@ __pycache__/
 # Lightkurve / Astropy TESS data cache
 .cache/
 .lightkurve-cache/
+
+# Claude Code local tool settings
+.claude/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+
+# Paper draft (LaTeX source, figures, compiled output) -- not pushed to this repo
+paper/

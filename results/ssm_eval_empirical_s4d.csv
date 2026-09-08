@@ -1,0 +1,2 @@
+target,source,status,period_d,duration_hr,snr,recovered,empirical_fap,n_null
+TOI-700,core,ok,16.051005100510054,0.8640000000000001,-2.7832069396972656,False,0.061224489795918366,97
